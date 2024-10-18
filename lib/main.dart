@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_bloc_app/UI/Calculator/Calculator.dart';
 import 'package:learning_bloc_app/UI/Counter/counter_screen.dart';
 import 'package:learning_bloc_app/UI/ImagePicker/image_picker.dart';
+import 'package:learning_bloc_app/bloc/Calculator/calculator_bloc.dart';
 import 'package:learning_bloc_app/bloc/ImagePicker/bloc/image_picker_bloc.dart';
-import 'package:learning_bloc_app/bloc/Utils/image_picker_utils.dart';
+import 'package:learning_bloc_app/Utils/image_picker_utils.dart';
 import 'package:learning_bloc_app/bloc/counter/counter_bloc.dart';
 import 'package:learning_bloc_app/UI/MultiComponent/multi_component_screen.dart';
 import 'package:learning_bloc_app/bloc/switchEvents/switch_event_bloc.dart';
@@ -22,6 +24,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => SwitchEventBloc()),
         BlocProvider(create: (context) => CounterBloc()),
         BlocProvider(create: (context) => ImagePickerBloc(ImagePickerUtils())),
+        BlocProvider(create: (context) => CalculatorBloc()),
       ],
       child: const MaterialApp(
         title: 'Flutter Demo',
@@ -63,47 +66,56 @@ class MainScreen extends StatelessWidget {
             title: 'Image Picker',
             route: const ImagePickerWidget(title: 'Image Picker'),
           ),
+          _buildGridCard(
+            context,
+            icon: Icons.calculate_rounded,
+            title: 'Calculator',
+            route: const Calculator(title: 'Calculator'),
+          ),
         ],
       ),
     );
   }
 
-GestureDetector _buildGridCard(
-  BuildContext context, {
-  required IconData icon,
-  required String title,
-  required Widget route,
-}) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => route),
-      );
-    },
-    child: Card(
-      elevation: 4.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16), // Optional: Rounded corners
-      ),
-      child: Center(
-        child: Padding( // Added padding
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 48.0, color: Colors.teal), // Icon color for consistency
-              const SizedBox(height: 12.0), // Slightly more spacing
-              Text(
-                title,
-                style: const TextStyle(fontWeight: FontWeight.bold), // Bolder text
-              ),
-            ],
+  GestureDetector _buildGridCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required Widget route,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => route),
+        );
+      },
+      child: Card(
+        elevation: 4.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16), // Optional: Rounded corners
+        ),
+        child: Center(
+          child: Padding(
+            // Added padding
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon,
+                    size: 48.0,
+                    color: Colors.teal), // Icon color for consistency
+                const SizedBox(height: 12.0), // Slightly more spacing
+                Text(
+                  title,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold), // Bolder text
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }

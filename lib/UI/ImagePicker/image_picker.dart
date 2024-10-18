@@ -38,11 +38,11 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     );
   }
 
-  @override
-  void dispose() {
-    _clearImage();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _clearImage();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -62,20 +62,20 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                 elevation: 4,
                 shadowColor: Colors.tealAccent,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(32),
                 ),
                 child: BlocBuilder<ImagePickerBloc, ImagePickerState>(
                   builder: (context, state) {
-                    return SizedBox(
-                      height: 200,
-                      width: 200,
+                    return ClipRRect(
+                      
+                      borderRadius: BorderRadius.circular(24),
                       child: Stack(
                         children: [
                           state.file != null
-                              ? Container(
+                              ? SizedBox(
                                   // Use Container to control the size and behavior
-                                  height: 200,
-                                  width: 200,
+                                  height: 400,
+                                  width: 400,
                                   child: Image.file(
                                     File(state.file!.path),
                                     fit: BoxFit.cover,
@@ -84,7 +84,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                               : Center(
                                   child: Icon(
                                     Icons.image_outlined,
-                                    size: 100,
+                                    size: 350,
                                     color: Colors.teal.withOpacity(0.5),
                                   ),
                                 ),
@@ -95,12 +95,12 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                               top: 8,
                               right: 8,
                               child: IconButton(
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.clear,
-                                  color: Colors.red, // Change color as needed
+                                  color: Colors. cyan, // Change color as needed
                                 ),
                                 onPressed:
-                                    _clearImage, // Call the _clearImage method when tapped
+                                    _clearImage,
                               ),
                             ),
                         ],

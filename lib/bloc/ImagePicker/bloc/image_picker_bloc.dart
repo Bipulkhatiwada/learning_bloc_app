@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:learning_bloc_app/bloc/ImagePicker/bloc/image_picker_event.dart';
 import 'package:learning_bloc_app/bloc/ImagePicker/bloc/image_picker_state.dart';
-import '../../Utils/image_picker_utils.dart';
+import '../../../Utils/image_picker_utils.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerBloc extends Bloc<ImagePickerEvent, ImagePickerState> {

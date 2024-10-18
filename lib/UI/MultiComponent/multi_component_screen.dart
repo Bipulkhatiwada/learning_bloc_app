@@ -43,7 +43,7 @@ class SwitchExampleBlockState extends State<SwitchExampleBlock> {
                         value: state.sliderValue,
                         min: 0,
                         max: 100,
-                        divisions: 10, // Adjust divisions for more granularity
+                        divisions: 100, // Adjust divisions for more granularity
                         label: state.sliderValue.round().toString(),
                         onChanged: (double value) {
                           context
