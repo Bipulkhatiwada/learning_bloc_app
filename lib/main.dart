@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_bloc_app/UI/Calculator/Calculator.dart';
 import 'package:learning_bloc_app/UI/Counter/counter_screen.dart';
 import 'package:learning_bloc_app/UI/ImagePicker/image_picker.dart';
+import 'package:learning_bloc_app/UI/ToDo/to_do.dart';
 import 'package:learning_bloc_app/bloc/Calculator/calculator_bloc.dart';
 import 'package:learning_bloc_app/bloc/ImagePicker/bloc/image_picker_bloc.dart';
 import 'package:learning_bloc_app/Utils/image_picker_utils.dart';
+import 'package:learning_bloc_app/bloc/Todo/todo_bloc.dart';
 import 'package:learning_bloc_app/bloc/counter/counter_bloc.dart';
 import 'package:learning_bloc_app/UI/MultiComponent/multi_component_screen.dart';
 import 'package:learning_bloc_app/bloc/switchEvents/switch_event_bloc.dart';
@@ -25,6 +27,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => CounterBloc()),
         BlocProvider(create: (context) => ImagePickerBloc(ImagePickerUtils())),
         BlocProvider(create: (context) => CalculatorBloc()),
+        BlocProvider(create: (context) => TodoBloc()),
       ],
       child: const MaterialApp(
         title: 'Flutter Demo',
@@ -71,6 +74,12 @@ class MainScreen extends StatelessWidget {
             icon: Icons.calculate_rounded,
             title: 'Calculator',
             route: const Calculator(title: 'Calculator'),
+          ),
+          _buildGridCard(
+            context,
+            icon: Icons.task,
+            title: 'To Do',
+            route: const ToDoScreen(title: 'To do'),
           ),
         ],
       ),

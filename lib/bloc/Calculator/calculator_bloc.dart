@@ -141,7 +141,6 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorBlocState> {
 
   // Update the state with the new stack
   Map<String, String> result = extractComponents(stack);
-
       emit(state.copyWith(
         operand1: int.tryParse(result['firstNumber']!),
         operand2: int.tryParse(result['secondNumber']!),
