@@ -114,7 +114,8 @@ class _ToDoScreenState extends State<ToDoScreen> {
                     return ListView.builder(
                       itemCount: state.todoList!.length,
                       itemBuilder: (context, index) {
-                        final item = state.todoList![index];
+                        final List<ListDataModel> listToDisplay = state.todoList!.reversed.toList();
+                        final item = listToDisplay[index];
                         return _listItem(
                           context,
                           title: item.title ?? 'No Title',

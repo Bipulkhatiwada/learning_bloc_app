@@ -62,7 +62,7 @@ Widget _todoForm(BuildContext context) {
       borderRadius: BorderRadius.circular(16), // Optional: Rounded corners
     ),
     child: Padding(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
