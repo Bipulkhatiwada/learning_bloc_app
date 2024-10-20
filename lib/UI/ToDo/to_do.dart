@@ -70,24 +70,6 @@ class _ToDoScreenState extends State<ToDoScreen> {
                     if (state.todoList == null || state.todoList!.isEmpty) {
                       return const Center(
                         child:
-                            // OutlinedButton(
-                            //   onPressed: () async {
-                            //     final result = await Navigator.push(
-                            //       context,
-                            //       MaterialPageRoute(
-                            //         builder: (context) =>
-                            //             ToDoFormScreen(title: 'Add Details'),
-                            //       ),
-                            //     );
-
-                            //     // Handle the result (if you passed a signal like true when adding a to-do)
-                            //     if (result == true) {
-                            //       setState(
-                            //           () {}); // Trigger a rebuild of the ToDoScreen after coming back
-                            //     }
-                            //   },
-                            //   child: const Text('Add To DO'),
-                            // )
                             Center(
                           child: Padding(
                             // Added padding
