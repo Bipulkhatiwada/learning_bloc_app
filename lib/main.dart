@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_bloc_app/UI/Calculator/Calculator.dart';
 import 'package:learning_bloc_app/UI/Counter/counter_screen.dart';
+import 'package:learning_bloc_app/UI/FetchPosts/post.dart';
 import 'package:learning_bloc_app/UI/ImagePicker/image_picker.dart';
 import 'package:learning_bloc_app/UI/ToDo/to_do.dart';
+import 'package:learning_bloc_app/UI/WeatherHomepage/weather_display_page.dart';
 import 'package:learning_bloc_app/bloc/Calculator/calculator_bloc.dart';
+import 'package:learning_bloc_app/bloc/FetchPosts/fetch_post_bloc.dart';
 import 'package:learning_bloc_app/bloc/ImagePicker/bloc/image_picker_bloc.dart';
 import 'package:learning_bloc_app/Utils/image_picker_utils.dart';
 import 'package:learning_bloc_app/bloc/Todo/todo_bloc.dart';
@@ -28,6 +31,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => ImagePickerBloc(ImagePickerUtils())),
         BlocProvider(create: (context) => CalculatorBloc()),
         BlocProvider(create: (context) => TodoBloc()),
+         BlocProvider(create: (context) => FetchPostsBloc()),
       ],
       child: const MaterialApp(
         title: 'Flutter Demo',
@@ -80,6 +84,18 @@ class MainScreen extends StatelessWidget {
             icon: Icons.task,
             title: 'To Do',
             route: const ToDoScreen(title: 'To do'),
+          ),
+          _buildGridCard(
+            context,
+            icon: Icons.cloud,
+            title: 'Weather',
+            route: const MyHomePage(title: 'Weather'),
+          ),
+          _buildGridCard(
+            context,
+            icon: Icons.note,
+            title: 'Posts',
+            route: const PostScreen(title: 'Fetch Posts'),
           ),
         ],
       ),
