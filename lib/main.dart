@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => ImagePickerBloc(ImagePickerUtils())),
         BlocProvider(create: (context) => CalculatorBloc()),
         BlocProvider(create: (context) => TodoBloc()),
-         BlocProvider(create: (context) => FetchPostsBloc()),
+        BlocProvider(create: (context) => FetchPostsBloc()),
       ],
       child: const MaterialApp(
         title: 'Flutter Demo',
@@ -130,11 +130,11 @@ class MainScreen extends StatelessWidget {
                 Icon(icon,
                     size: 48.0,
                     color: Colors.teal), // Icon color for consistency
-                const SizedBox(height: 12.0), // Slightly more spacing
+                const SizedBox(height: 12.0), 
                 Text(
                   title,
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold), // Bolder text
+                      fontWeight: FontWeight.bold), 
                 ),
               ],
             ),

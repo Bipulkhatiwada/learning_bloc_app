@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learning_bloc_app/UI/ToDo/ToDoFormView.dart';
+import 'package:learning_bloc_app/Utils/enums.dart';
+import 'package:learning_bloc_app/Viewmodels/list_model.dart';
 import 'package:learning_bloc_app/bloc/Todo/todo_bloc.dart';
 import 'package:learning_bloc_app/bloc/Todo/todo_event.dart';
 import 'package:learning_bloc_app/bloc/Todo/todo_state.dart';
@@ -14,6 +16,25 @@ class ToDoScreen extends StatefulWidget {
 }
 
 class _ToDoScreenState extends State<ToDoScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<TodoBloc>().add(FetchListEvent());
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: const Duration(seconds: 2),
+      action: SnackBarAction(
+        label: 'OK',
+        onPressed: () {},
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,18 +59,16 @@ class _ToDoScreenState extends State<ToDoScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blueAccent,
         onPressed: () async {
-          final result = await Navigator.push(
+         Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const ToDoFormScreen(title: 'Add Details'),
             ),
           );
 
-          // Handle the result (if you passed a signal like true when adding a to-do)
-          if (result == true) {
-            setState(
-                () {}); // Trigger a rebuild of the ToDoScreen after coming back
-          }
+          // if (result == true) {
+          //   setState(() {});
+          // }
         },
         child: const Icon(Icons.add),
       ),
@@ -61,51 +80,76 @@ class _ToDoScreenState extends State<ToDoScreen> {
             // Listen for any changes in TodoBloc and rebuild the UI if needed
             BlocListener<TodoBloc, TodoState>(
               listener: (context, state) {
-                // This will automatically trigger rebuild on any state change
+                if (state.message != "" && state.message != null) {
+                  _showSnackBar(context, state.message.toString());
+                }
                 setState(() {});
               },
               child: Expanded(
                 child: BlocBuilder<TodoBloc, TodoState>(
                   builder: (context, state) {
-                    if (state.todoList == null || state.todoList!.isEmpty) {
-                      return const Center(
-                        child:
-                            Center(
+                    if (state.postStatus == PostStatus.loading) {
+                      return const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.blueAccent,
+                              strokeWidth: 4.0,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            'Loading list...',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.blueAccent,
+                            ),
+                          ),
+                        ],
+                      );
+                    } else if (state.postStatus == PostStatus.success) {
+                      if (state.todoList == null || state.todoList!.isEmpty) {
+                        return const Center(
                           child: Padding(
-                            // Added padding
                             padding: EdgeInsets.all(16.0),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.no_backpack_rounded,
-                                    size: 48.0,
-                                    color: Color.fromARGB(255, 234, 29, 2)), // Icon color for consistency
-                                SizedBox(height: 12.0), // Slightly more spacing
+                                Icon(
+                                  Icons.no_backpack_rounded,
+                                  size: 48.0,
+                                  color: Color.fromARGB(255, 234, 29, 2),
+                                ),
+                                SizedBox(height: 12.0),
                                 Text(
                                   "No list data Available",
-                                  style: TextStyle(
-                                      fontWeight:
-                                          FontWeight.bold), // Bolder text
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      );
-                    }
-                    return ListView.builder(
-                      itemCount: state.todoList!.length,
-                      itemBuilder: (context, index) {
-                        final List<ListDataModel> listToDisplay = state.todoList!.reversed.toList();
-                        final item = listToDisplay[index];
-                        return _listItem(
-                          context,
-                          title: item.title ?? 'No Title',
-                          description: item.description ?? 'No Description',
-                          itemIndex: index,
                         );
-                      },
-                    );
+                      }
+                      return ListView.builder(
+                        itemCount: state.todoList!.length,
+                        itemBuilder: (context, index) {
+                          final List<ListDataModel> listToDisplay =
+                              state.todoList!.toList();
+                          final item = listToDisplay[index];
+                          return _listItem(context,
+                              title: item.title ?? 'No Title',
+                              description: item.description ?? 'No Description',
+                              itemIndex: index,
+                              count: state.todoList!.length);
+                        },
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                  buildWhen: (previousState, currentState) {
+                    return previousState.todoList != currentState.todoList;
                   },
                 ),
               ),
@@ -115,14 +159,19 @@ class _ToDoScreenState extends State<ToDoScreen> {
       ),
     );
   }
+  
+@override
+void deactivate() {
+  super.deactivate();
+ context.read<TodoBloc>().add(ResetTodoEvent());
+}
 }
 
-Widget _listItem(
-  BuildContext context, {
-  required String title,
-  required String description,
-  required int itemIndex,
-}) {
+Widget _listItem(BuildContext context,
+    {required String title,
+    required String description,
+    required int itemIndex,
+    required int count}) {
   return Card(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(16),
@@ -148,7 +197,7 @@ Widget _listItem(
           ),
           IconButton(
             onPressed: () {
-              _showDeleteConfirmationDialog(context, itemIndex, title);
+              _showDeleteConfirmationDialog(context, itemIndex, title, count);
             },
             icon: const Icon(Icons.delete),
           ),
@@ -159,7 +208,7 @@ Widget _listItem(
 }
 
 void _showDeleteConfirmationDialog(
-    BuildContext context, int itemIndex, String title) {
+    BuildContext context, int itemIndex, String title, int count) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -168,19 +217,16 @@ void _showDeleteConfirmationDialog(
         content: const Text('Are you sure you want to delete this To-DO item?'),
         actions: [
           TextButton(
+            child: const Text('Cancel'),
             onPressed: () {
-              // Close the dialog
               Navigator.of(context).pop();
             },
-            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
-              // Trigger the deletion of the item
               context
                   .read<TodoBloc>()
                   .add(DeleteTodoEvent(itemIndex: itemIndex));
-
               // Close the dialog
               Navigator.of(context).pop();
             },

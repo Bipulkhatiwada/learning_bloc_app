@@ -29,3 +29,7 @@ class DeleteTodoEvent extends TodoEvent {
   @override
   List<Object> get props => [itemIndex];
 }
+
+class FetchListEvent extends TodoEvent {}
+
+class ResetTodoEvent extends TodoEvent {}

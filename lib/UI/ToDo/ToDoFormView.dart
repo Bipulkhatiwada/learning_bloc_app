@@ -102,7 +102,7 @@ Widget _todoForm(BuildContext context) {
                           )),
                       Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: OutlinedButton(
+                          child: OutlinedButton (
                             onPressed: () {
                               if (todoTitle != "" && desc != ""){
                                context.read<TodoBloc>().add(AddToDoEvent(title: todoTitle, desc: desc));
