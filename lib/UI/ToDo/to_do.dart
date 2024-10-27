@@ -37,6 +37,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("########list view build#######");
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -59,10 +60,10 @@ class _ToDoScreenState extends State<ToDoScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blueAccent,
         onPressed: () async {
-         Navigator.push(
+          Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const ToDoFormScreen(title: 'Add Details'),
+              builder: (context) =>  const ToDoFormScreen(itemIndex: 0),
             ),
           );
 
@@ -159,12 +160,12 @@ class _ToDoScreenState extends State<ToDoScreen> {
       ),
     );
   }
-  
-@override
-void deactivate() {
-  super.deactivate();
- context.read<TodoBloc>().add(ResetTodoEvent());
-}
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    context.read<TodoBloc>().add(ResetTodoEvent());
+  }
 }
 
 Widget _listItem(BuildContext context,
@@ -197,9 +198,23 @@ Widget _listItem(BuildContext context,
           ),
           IconButton(
             onPressed: () {
-              _showDeleteConfirmationDialog(context, itemIndex, title, count);
+              _showDeleteConfirmationDialog(
+                  context, itemIndex, title, description, count, "delete");
             },
             icon: const Icon(Icons.delete),
+          ),
+          IconButton(
+            onPressed: () {
+              // _showDeleteConfirmationDialog(
+              //     context, itemIndex, title, description, count, "edit");
+               Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ToDoFormScreen(title: title, desc: description, type: "edit", itemIndex: itemIndex),
+                  ),
+                );
+            },
+            icon: const Icon(Icons.edit),
           ),
         ],
       ),
@@ -207,14 +222,14 @@ Widget _listItem(BuildContext context,
   );
 }
 
-void _showDeleteConfirmationDialog(
-    BuildContext context, int itemIndex, String title, int count) {
+void _showDeleteConfirmationDialog(BuildContext context, int itemIndex,
+    String title, String desc, int count, String type) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text('Delete $title '),
-        content: const Text('Are you sure you want to delete this To-DO item?'),
+        content: Text('Are you sure you want to $type this To-DO item?'),
         actions: [
           TextButton(
             child: const Text('Cancel'),
@@ -224,9 +239,18 @@ void _showDeleteConfirmationDialog(
           ),
           TextButton(
             onPressed: () {
-              context
-                  .read<TodoBloc>()
-                  .add(DeleteTodoEvent(itemIndex: itemIndex));
+              if (type == "delete") {
+                context
+                    .read<TodoBloc>()
+                    .add(DeleteTodoEvent(itemIndex: itemIndex));
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ToDoFormScreen(title: title, desc: desc, type: type, itemIndex: itemIndex),
+                  ),
+                );
+              }
               // Close the dialog
               Navigator.of(context).pop();
             },

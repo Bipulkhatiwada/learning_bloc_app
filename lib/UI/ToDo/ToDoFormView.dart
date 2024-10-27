@@ -1,24 +1,27 @@
+// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:learning_bloc_app/bloc/Todo/todo_bloc.dart';
 import 'package:learning_bloc_app/bloc/Todo/todo_event.dart';
 import 'package:learning_bloc_app/bloc/Todo/todo_state.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ToDoFormScreen extends StatefulWidget {
-  const ToDoFormScreen({super.key, required this.title});
+class ToDoFormScreen extends StatelessWidget {
+  final String? title;
+  final String? desc;
+  final String? type;
+  final int itemIndex;
 
-  final String title;
+  const ToDoFormScreen(
+      {super.key, this.title, this.desc, this.type, required this.itemIndex});
 
-  @override
-  State<ToDoFormScreen> createState() => _ToDoFormScreenState();
-}
-
-class _ToDoFormScreenState extends State<ToDoFormScreen> {
   @override
   Widget build(BuildContext context) {
+    print("*********list form view build*********");
+    print("*********$title, $desc, $type *********");
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text("Add Details"),
         backgroundColor: Colors.blueAccent,
       ),
       body: Padding(
@@ -28,7 +31,7 @@ class _ToDoFormScreenState extends State<ToDoFormScreen> {
             Expanded(
               child: BlocBuilder<TodoBloc, TodoState>(
                 builder: (context, state) {
-                  return _todoForm(context);
+                  return _todoForm(context, title, desc, type, itemIndex);
                 },
               ),
             ),
@@ -37,13 +40,18 @@ class _ToDoFormScreenState extends State<ToDoFormScreen> {
       ),
     );
   }
-  
 }
 
-Widget _todoForm(BuildContext context) {
- String todoTitle = "";
- String desc = "";
- void _showSnackBar(BuildContext context, String message) {
+Widget _todoForm(BuildContext context, String? title, String? desc,
+    String? type, int itemIndex) {
+  String todoTitle = title ?? "";
+  String todoDesc = desc ?? "";
+
+  TextEditingController titleController = TextEditingController(text: title);
+  TextEditingController descriptionController =
+      TextEditingController(text: desc);
+
+  void showSnackBar(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
       duration: const Duration(seconds: 2),
@@ -57,6 +65,7 @@ Widget _todoForm(BuildContext context) {
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+
   return Card(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(16), // Optional: Rounded corners
@@ -81,34 +90,46 @@ Widget _todoForm(BuildContext context) {
                       Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextField(
+                            controller: titleController,
                             decoration: const InputDecoration(
                               labelText: 'Enter title',
                               border: OutlineInputBorder(),
                             ),
                             onChanged: (value) {
-                                todoTitle = value;
+                              todoTitle = value;
                             },
                           )),
                       Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextField(
+                            controller: descriptionController,
                             decoration: const InputDecoration(
                               labelText: 'Enter Description',
                               border: OutlineInputBorder(),
                             ),
                             onChanged: (value) {
-                              desc = value;
+                              todoDesc = value;
                             },
                           )),
                       Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: OutlinedButton (
+                          child: OutlinedButton(
                             onPressed: () {
-                              if (todoTitle != "" && desc != ""){
-                               context.read<TodoBloc>().add(AddToDoEvent(title: todoTitle, desc: desc));
-                               Navigator.pop(context, true); 
+                              if (type == "edit") {
+                                context.read<TodoBloc>().add(UpdateTodoEvent(
+                                    itemIndex: itemIndex,
+                                    title: todoTitle ,
+                                    desc: todoDesc ));
+                                Navigator.pop(context, true);
                               } else {
-                                _showSnackBar(context, "Fields Cannot be empty");
+                                if (todoTitle != "" && todoDesc != "") {
+                                  context.read<TodoBloc>().add(AddToDoEvent(
+                                      title: todoTitle, desc: todoDesc));
+                                  Navigator.pop(context, true);
+                                } else {
+                                  showSnackBar(
+                                      context, "Fields Cannot be empty");
+                                }
                               }
                             },
                             child: const Text('Add To DO'),
@@ -124,4 +145,3 @@ Widget _todoForm(BuildContext context) {
     ),
   );
 }
-

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 class FetchPostEvent extends Equatable {
 
-FetchPostEvent();
+const FetchPostEvent();
 
 
 @override

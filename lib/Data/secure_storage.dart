@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:learning_bloc_app/Viewmodels/list_model.dart';
 
 class SecureStorage {
-  final FlutterSecureStorage storage = FlutterSecureStorage();
+  final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   Future<void> saveSecureData(String key, List<ListDataModel> value) async {
     final jsonString = jsonEncode(value.map((e) => e.toJson()).toList());

@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
          actions: [
           IconButton(
-            icon:  Icon(Icons.logout), // Action icon (e.g., notifications)
+            icon:  const Icon(Icons.logout), // Action icon (e.g., notifications)
             onPressed: () {
               setState(() {
                 _viewModel.isValidUser = false;
@@ -127,12 +127,12 @@ class CustomCard extends StatelessWidget {
   final VoidCallback onReadMore;
 
   const CustomCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.description,
     this.image,
     required this.onReadMore,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

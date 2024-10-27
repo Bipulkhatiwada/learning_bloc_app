@@ -18,7 +18,7 @@ class DivideEvent extends CalculatorEvent {}
 class InputEvent extends CalculatorEvent {
   final String input;
 
-  InputEvent({required this.input});
+  const InputEvent({required this.input});
 
   @override
   List<Object> get props => [input];

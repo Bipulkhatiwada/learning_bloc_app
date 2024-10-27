@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SecondScreen extends StatelessWidget {
   final String data;
 
-  const SecondScreen({Key? key, required this.data}) : super(key: key);
+  const SecondScreen({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {

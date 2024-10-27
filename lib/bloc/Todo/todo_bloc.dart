@@ -11,6 +11,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<DeleteTodoEvent>(_deleteTodo);
     on<FetchListEvent>(_fetchTodoList);
     on<ResetTodoEvent>(_resetTodoEvent);
+     on<UpdateTodoEvent>(_editTodo);
   }
 
   void _addTodo(AddToDoEvent event, Emitter<TodoState> emit) {
@@ -37,7 +38,19 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       }
       SecureStorage().saveSecureData("toDoList", list);
 
-      emit(state.copyWith(todoList: list, message: "deleted sucessfully"));
+      emit(state.copyWith(todoList: list, message: "deleted successfully"));
+    }
+  }
+
+  void _editTodo(UpdateTodoEvent event, Emitter<TodoState> emit) async {
+    var list = await SecureStorage().readSecureData("toDoList");
+    if (list != null && list.isNotEmpty) {
+      if (event.itemIndex >= 0 && event.itemIndex < list.length) {
+      list[event.itemIndex] =  ListDataModel(title: event.title, description: event.desc);
+      }
+      SecureStorage().saveSecureData("toDoList", list);
+
+      emit(state.copyWith(todoList: list, message: "edited successfully"));
     }
   }
 

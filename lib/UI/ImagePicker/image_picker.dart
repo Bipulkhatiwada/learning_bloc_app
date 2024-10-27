@@ -97,7 +97,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                               child: IconButton(
                                 icon: const Icon(
                                   Icons.clear,
-                                  color: Colors. cyan, // Change color as needed
+                                  color: Colors. cyan, 
                                 ),
                                 onPressed:
                                     _clearImage,

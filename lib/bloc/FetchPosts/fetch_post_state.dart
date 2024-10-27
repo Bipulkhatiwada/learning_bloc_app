@@ -7,7 +7,7 @@ class FetchPostState extends Equatable {
   final List<PostModel> postList;
   final String message;
 
-  FetchPostState({
+  const FetchPostState({
     this.postStatus = PostStatus.loading,
     this.postList = const <PostModel>[],
     this.message = "",
