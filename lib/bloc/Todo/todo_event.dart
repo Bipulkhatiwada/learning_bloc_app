@@ -34,6 +34,17 @@ class FetchListEvent extends TodoEvent {}
 
 class ResetTodoEvent extends TodoEvent {}
 
+class CompleteTodoEvent extends TodoEvent {
+   final int itemIndex;
+  final String title;
+  final String desc;
+
+  const CompleteTodoEvent({required this.itemIndex, required this.title, required this.desc});
+
+  @override
+  List<Object> get props => [itemIndex, title, desc];
+}
+
 class UpdateTodoEvent extends TodoEvent {
 
 

@@ -7,7 +7,7 @@ import 'package:learning_bloc_app/bloc/FetchPosts/fetch_post_state.dart';
 
 class FetchPostsBloc extends Bloc<FetchPostEvent, FetchPostState> {
  PostRepository postRepository = PostRepository();
-  FetchPostsBloc() : super(FetchPostState()){
+  FetchPostsBloc() : super(const FetchPostState()){
      on<FetchPosts>(fetchPost);
   }
 

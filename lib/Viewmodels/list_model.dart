@@ -1,26 +1,35 @@
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:learning_bloc_app/Utils/enums.dart';
 
 class ListDataModel extends Equatable {
-  String? title;
-  String? description;
-  String? icon;
-  XFile? image;
-  
+  final String? title;
+  final String? description;
+  final String? icon;
+  final XFile? image;
+  final TodoStatus? todoStatus;
 
-  ListDataModel({this.title, this.description, this.icon, this.image});
+  const ListDataModel({  // Add const for better performance
+    this.title,
+    this.description,
+    this.icon,
+    this.image,
+    this.todoStatus,
+  });
 
   ListDataModel copyWith({
     String? title,
     String? description,
     String? icon,
     XFile? image,
+    TodoStatus? todoStatus,
   }) {
     return ListDataModel(
       title: title ?? this.title,
       description: description ?? this.description,
       icon: icon ?? this.icon,
       image: image ?? this.image,
+      todoStatus: todoStatus ?? this.todoStatus,
     );
   }
 
@@ -29,7 +38,8 @@ class ListDataModel extends Equatable {
       'title': title,
       'description': description,
       'icon': icon,
-      'image': image,
+      'image': image?.path, // Store the path instead of XFile object
+      'todoStatus': todoStatus?.name, // Convert enum to string
     };
   }
 
@@ -38,10 +48,16 @@ class ListDataModel extends Equatable {
       title: json['title'],
       description: json['description'],
       icon: json['icon'],
-      image: json['image'],
+      image: json['image'] != null ? XFile(json['image']) : null,
+      todoStatus: json['todoStatus'] != null 
+          ? TodoStatus.values.firstWhere(
+              (e) => e.name == json['todoStatus'],
+              orElse: () => TodoStatus.pending // provide a default value
+            )
+          : null,
     );
   }
 
   @override
-  List<Object?> get props => [title, description, icon, image];
+  List<Object?> get props => [title, description, icon, image, todoStatus];
 }

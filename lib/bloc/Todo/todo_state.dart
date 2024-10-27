@@ -8,25 +8,29 @@ class TodoState extends Equatable {
   List<ListDataModel>? todoList = [];
   String? message = "";
   final PostStatus? postStatus;
+  final TodoStatus? todoStatus;
 
   TodoState({
     this.todoList,
     this.message,
     this.postStatus,
+    this.todoStatus,
   });
 
   TodoState copyWith ({
     List<ListDataModel>? todoList,
     String? message,
-    PostStatus? postStatus
+    PostStatus? postStatus,
+    TodoStatus? todoStatus
   }) {
     return  TodoState (
       todoList: todoList ?? this.todoList,
       message: message ?? this.message,
       postStatus: postStatus ?? this.postStatus,
+      todoStatus: todoStatus ?? this.todoStatus,
       );
   }
 
   @override
-  List<Object?> get props => [todoList, message, postStatus];
+  List<Object?> get props => [todoList, message, postStatus, todoStatus];
 }

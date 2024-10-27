@@ -63,13 +63,9 @@ class _ToDoScreenState extends State<ToDoScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>  const ToDoFormScreen(itemIndex: 0),
+              builder: (context) => const ToDoFormScreen(itemIndex: 0),
             ),
           );
-
-          // if (result == true) {
-          //   setState(() {});
-          // }
         },
         child: const Icon(Icons.add),
       ),
@@ -78,7 +74,6 @@ class _ToDoScreenState extends State<ToDoScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            // Listen for any changes in TodoBloc and rebuild the UI if needed
             BlocListener<TodoBloc, TodoState>(
               listener: (context, state) {
                 if (state.message != "" && state.message != null) {
@@ -139,19 +134,18 @@ class _ToDoScreenState extends State<ToDoScreen> {
                               state.todoList!.toList();
                           final item = listToDisplay[index];
                           return _listItem(context,
-                              title: item.title ?? 'No Title',
-                              description: item.description ?? 'No Description',
                               itemIndex: index,
-                              count: state.todoList!.length);
+                              count: state.todoList!.length,
+                              model: item);
                         },
                       );
                     } else {
                       return const SizedBox.shrink();
                     }
                   },
-                  buildWhen: (previousState, currentState) {
-                    return previousState.todoList != currentState.todoList;
-                  },
+                  // buildWhen: (previousState, currentState) {
+                  //   return previousState.todoList != currentState.todoList;
+                  // },
                 ),
               ),
             ),
@@ -168,11 +162,12 @@ class _ToDoScreenState extends State<ToDoScreen> {
   }
 }
 
-Widget _listItem(BuildContext context,
-    {required String title,
-    required String description,
-    required int itemIndex,
-    required int count}) {
+Widget _listItem(
+  BuildContext context, {
+  required int itemIndex,
+  required int count,
+  required ListDataModel model,
+}) {
   return Card(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(16),
@@ -189,32 +184,62 @@ Widget _listItem(BuildContext context,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  model.title ?? "",
+                  style: model.todoStatus == TodoStatus.pending
+                      ? const TextStyle(fontWeight: FontWeight.bold)
+                      : const TextStyle(decoration: TextDecoration.lineThrough),
                 ),
-                Text(description),
+                Text(
+                  model.description ?? "",
+                  style: model.todoStatus == TodoStatus.pending
+                      ? const TextStyle(fontWeight: FontWeight.bold)
+                      : const TextStyle(decoration: TextDecoration.lineThrough),
+                ),
               ],
             ),
           ),
-          IconButton(
+            IconButton(
+              onPressed: () {
+                _showDeleteConfirmationDialog(
+                    context,
+                    itemIndex,
+                    model.title ?? "",
+                    model.description ?? "",
+                    count,
+                    "delete");
+              },
+              icon: const Icon(Icons.delete),
+            ),
+             if (model.todoStatus == TodoStatus.pending)
+            IconButton(
             onPressed: () {
-              _showDeleteConfirmationDialog(
-                  context, itemIndex, title, description, count, "delete");
-            },
-            icon: const Icon(Icons.delete),
-          ),
-          IconButton(
-            onPressed: () {
-              // _showDeleteConfirmationDialog(
-              //     context, itemIndex, title, description, count, "edit");
-               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ToDoFormScreen(title: title, desc: description, type: "edit", itemIndex: itemIndex),
-                  ),
-                );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ToDoFormScreen(
+                      title: model.title ?? "",
+                      desc: model.description ?? "",
+                      type: "edit",
+                      itemIndex: itemIndex),
+                ),
+              );
             },
             icon: const Icon(Icons.edit),
+          ),
+           if (model.todoStatus == TodoStatus.pending)
+            IconButton(
+            onPressed: () {
+              _showDeleteConfirmationDialog(
+                  context,
+                  itemIndex,
+                  model.title ?? "",
+                  model.description ?? "",
+                  count,
+                  "complete");
+            },
+            icon: model.todoStatus == TodoStatus.pending
+                ? const Icon(Icons.hourglass_empty)
+                : const Icon(Icons.check_box),
           ),
         ],
       ),
@@ -228,7 +253,7 @@ void _showDeleteConfirmationDialog(BuildContext context, int itemIndex,
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Delete $title '),
+        title: Text('$type $title '),
         content: Text('Are you sure you want to $type this To-DO item?'),
         actions: [
           TextButton(
@@ -243,18 +268,26 @@ void _showDeleteConfirmationDialog(BuildContext context, int itemIndex,
                 context
                     .read<TodoBloc>()
                     .add(DeleteTodoEvent(itemIndex: itemIndex));
+                Navigator.of(context).pop();
+              } else if (type == "complete") {
+                context.read<TodoBloc>().add(CompleteTodoEvent(
+                    itemIndex: itemIndex, title: title, desc: desc));
+                Navigator.of(context).pop();
               } else {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ToDoFormScreen(title: title, desc: desc, type: type, itemIndex: itemIndex),
+                    builder: (context) => ToDoFormScreen(
+                        title: title,
+                        desc: desc,
+                        type: type,
+                        itemIndex: itemIndex),
                   ),
                 );
+                Navigator.of(context).pop();
               }
-              // Close the dialog
-              Navigator.of(context).pop();
             },
-            child: const Text('Delete'),
+            child: Text(type),
           ),
         ],
       );

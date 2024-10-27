@@ -12,11 +12,12 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<FetchListEvent>(_fetchTodoList);
     on<ResetTodoEvent>(_resetTodoEvent);
      on<UpdateTodoEvent>(_editTodo);
+     on<CompleteTodoEvent>(_completeTodo);
   }
 
   void _addTodo(AddToDoEvent event, Emitter<TodoState> emit) {
     var todoList = List<ListDataModel>.from(state.todoList ?? []);
-    todoList.add(ListDataModel(title: event.title, description: event.desc));
+    todoList.add(ListDataModel(title: event.title, description: event.desc, todoStatus: TodoStatus.pending));
     SecureStorage().saveSecureData("toDoList", todoList);
     emit(state.copyWith(
         todoList: todoList,
@@ -25,10 +26,12 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   }
 
   void _fetchTodoList(FetchListEvent event, Emitter<TodoState> emit) async {
-    emit(state.copyWith(postStatus: PostStatus.loading));
-    var list = await SecureStorage().readSecureData("toDoList");
-    emit(state.copyWith(todoList: list, postStatus: PostStatus.success));
-  }
+  emit(state.copyWith(todoList: [], postStatus: PostStatus.loading));
+  await Future.delayed(const Duration(seconds: 2));
+  var list = await SecureStorage().readSecureData("toDoList");
+  emit(state.copyWith(todoList: list, postStatus: PostStatus.success));
+}
+
 
   void _deleteTodo(DeleteTodoEvent event, Emitter<TodoState> emit) async {
     var list = await SecureStorage().readSecureData("toDoList");
@@ -46,7 +49,19 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     var list = await SecureStorage().readSecureData("toDoList");
     if (list != null && list.isNotEmpty) {
       if (event.itemIndex >= 0 && event.itemIndex < list.length) {
-      list[event.itemIndex] =  ListDataModel(title: event.title, description: event.desc);
+      list[event.itemIndex] =  ListDataModel(title: event.title, description: event.desc, todoStatus: TodoStatus.pending);
+      }
+      SecureStorage().saveSecureData("toDoList", list);
+
+      emit(state.copyWith(todoList: list, message: "edited successfully"));
+    }
+  }
+
+   void _completeTodo(CompleteTodoEvent event, Emitter<TodoState> emit) async {
+    var list = await SecureStorage().readSecureData("toDoList");
+    if (list != null && list.isNotEmpty) {
+      if (event.itemIndex >= 0 && event.itemIndex < list.length) {
+      list[event.itemIndex] =  ListDataModel(title: event.title, description: event.desc, todoStatus: TodoStatus.completed);
       }
       SecureStorage().saveSecureData("toDoList", list);
 

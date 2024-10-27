@@ -132,7 +132,7 @@ Widget _todoForm(BuildContext context, String? title, String? desc,
                                 }
                               }
                             },
-                            child: const Text('Add To DO'),
+                            child: const Text('Add To Do'),
                           ))
                     ],
                   );
