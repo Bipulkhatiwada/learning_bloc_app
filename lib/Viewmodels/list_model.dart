@@ -38,8 +38,8 @@ class ListDataModel extends Equatable {
       'title': title,
       'description': description,
       'icon': icon,
-      'image': image?.path, // Store the path instead of XFile object
-      'todoStatus': todoStatus?.name, // Convert enum to string
+      'image': image?.path,
+      'todoStatus': todoStatus?.name,
     };
   }
 

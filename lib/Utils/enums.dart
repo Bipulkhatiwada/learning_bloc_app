@@ -1,3 +1,3 @@
 
 enum PostStatus {loading, success, failure}
-enum TodoStatus {completed, pending}
+enum TodoStatus {completed, pending, inProgress}

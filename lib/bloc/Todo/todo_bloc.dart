@@ -65,7 +65,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       }
       SecureStorage().saveSecureData("toDoList", list);
 
-      emit(state.copyWith(todoList: list, message: "edited successfully"));
+      emit(state.copyWith(todoList: list, message: "Task completed "));
     }
   }
 

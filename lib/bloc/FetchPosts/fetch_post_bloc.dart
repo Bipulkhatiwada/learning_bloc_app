@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:learning_bloc_app/Network/dio_client.dart';
 import 'package:learning_bloc_app/Repository/post_repository.dart';
 import 'package:learning_bloc_app/Utils/enums.dart';
 import 'package:learning_bloc_app/bloc/FetchPosts/fetch_post_event.dart';
@@ -12,7 +13,9 @@ class FetchPostsBloc extends Bloc<FetchPostEvent, FetchPostState> {
   }
 
   void fetchPost(FetchPosts event,  Emitter<FetchPostState> emit) async {
-    await postRepository.fetchPost().then((newValue)  {
+
+    final DioClient dioClient = DioClient();
+    await dioClient.fetchPost(id: 1).then((newValue) {
         emit(state.copyWith(
           postStatus: PostStatus.success, 
           message: "",
@@ -21,5 +24,16 @@ class FetchPostsBloc extends Bloc<FetchPostEvent, FetchPostState> {
     }).onError((error, stackTrace){
         emit(state.copyWith(postStatus: PostStatus.failure, message: error.toString()));
     });
+
+    // await postRepository.fetchPost().then((newValue)  {
+    //     emit(state.copyWith(
+    //       postStatus: PostStatus.success, 
+    //       message: "",
+    //       postList: newValue,
+    //       ));
+    // }).onError((error, stackTrace){
+    //     emit(state.copyWith(postStatus: PostStatus.failure, message: error.toString()));
+    // });
+
     }
 }

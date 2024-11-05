@@ -42,20 +42,6 @@ class _ToDoScreenState extends State<ToDoScreen> {
       appBar: AppBar(
         title: Text(widget.title),
         backgroundColor: Colors.blueAccent,
-
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(Icons.add_circle_rounded),
-        //     onPressed: () {
-        //       Navigator.push(
-        //         context,
-        //         MaterialPageRoute(
-        //           builder: (context) => ToDoFormScreen(title: 'Add Details'),
-        //         ),
-        //       );
-        //     },
-        //   ),
-        // ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blueAccent,
@@ -175,8 +161,7 @@ Widget _listItem(
     child: Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Column(
@@ -198,6 +183,35 @@ Widget _listItem(
               ],
             ),
           ),
+          if (model.todoStatus != TodoStatus.pending)
+            const Text(
+              "completed",
+              style: TextStyle(color: Color.fromARGB(255, 5, 236, 182)),
+            ),
+          IconButton(
+            onPressed: () {
+              _showDeleteConfirmationDialog(context, itemIndex,
+                  model.title ?? "", model.description ?? "", count, "delete");
+            },
+            icon: const Icon(Icons.delete),
+          ),
+          if (model.todoStatus == TodoStatus.pending)
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ToDoFormScreen(
+                        title: model.title ?? "",
+                        desc: model.description ?? "",
+                        type: "edit",
+                        itemIndex: itemIndex),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.edit),
+            ),
+          if (model.todoStatus == TodoStatus.pending)
             IconButton(
               onPressed: () {
                 _showDeleteConfirmationDialog(
@@ -206,41 +220,12 @@ Widget _listItem(
                     model.title ?? "",
                     model.description ?? "",
                     count,
-                    "delete");
+                    "complete");
               },
-              icon: const Icon(Icons.delete),
+              icon: model.todoStatus == TodoStatus.pending
+                  ? const Icon(Icons.hourglass_empty)
+                  : const Icon(Icons.check_box),
             ),
-             if (model.todoStatus == TodoStatus.pending)
-            IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ToDoFormScreen(
-                      title: model.title ?? "",
-                      desc: model.description ?? "",
-                      type: "edit",
-                      itemIndex: itemIndex),
-                ),
-              );
-            },
-            icon: const Icon(Icons.edit),
-          ),
-           if (model.todoStatus == TodoStatus.pending)
-            IconButton(
-            onPressed: () {
-              _showDeleteConfirmationDialog(
-                  context,
-                  itemIndex,
-                  model.title ?? "",
-                  model.description ?? "",
-                  count,
-                  "complete");
-            },
-            icon: model.todoStatus == TodoStatus.pending
-                ? const Icon(Icons.hourglass_empty)
-                : const Icon(Icons.check_box),
-          ),
         ],
       ),
     ),
