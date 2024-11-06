@@ -1,4 +1,4 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,7 +43,7 @@ class _NotesScreenBLocState extends State<NotesScreenBLoc> {
             title: Text(widget.title),
             backgroundColor: Theme.of(context).primaryColor,
           ),
-          body: _buildNotesListUsingBloc(),
+          body: _buildNotesListUsingBloc(state.noteList),
           floatingActionButton: FloatingActionButton(
             onPressed: () => _showNoteDialog(context),
             child: const Icon(Icons.add),
@@ -53,11 +53,8 @@ class _NotesScreenBLocState extends State<NotesScreenBLoc> {
     );
   }
 
-  Widget _buildNotesListUsingBloc() {
-    return BlocBuilder<NoteBloc, NoteStates>(
-      builder: (_, state) {
-        log("fdfdf :${state.noteList[1].title}");
-        if (state.noteList.isEmpty) {
+  Widget _buildNotesListUsingBloc(List<NotesModel> noteList) {
+        if (noteList.isEmpty) {
           return const Center(
             child: Text(
               'No notes yet. Tap + to add one!',
@@ -68,13 +65,11 @@ class _NotesScreenBLocState extends State<NotesScreenBLoc> {
 
         return ListView.builder(
           padding: const EdgeInsets.all(8),
-          itemCount: state.noteList.length,
+          itemCount: noteList.length,
           itemBuilder: (_, index) {
-            return _buildNoteCard(context, state.noteList[index]);
+            return _buildNoteCard(context, noteList[index]);
           },
         );
-      },
-    );
   }
 
   Widget _buildNoteCard(BuildContext context, NotesModel note) {
@@ -140,6 +135,7 @@ class _NotesScreenBLocState extends State<NotesScreenBLoc> {
                     if (value!.isEmpty) {
                       return "Title is required";
                     }
+                    return null;
                   },
                   controller: _titleController,
                   decoration: const InputDecoration(
@@ -159,6 +155,7 @@ class _NotesScreenBLocState extends State<NotesScreenBLoc> {
                     if (value!.isEmpty) {
                       return "Description is required";
                     }
+                    return null;
                   },
                   controller: _descriptionController,
                   decoration: const InputDecoration(
