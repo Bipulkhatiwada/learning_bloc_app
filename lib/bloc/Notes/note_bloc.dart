@@ -1,10 +1,11 @@
 import 'dart:developer';
+ 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_bloc_app/Boxes/boxes.dart';
 import 'package:learning_bloc_app/bloc/Notes/note_event.dart';
 import 'package:learning_bloc_app/bloc/Notes/note_states.dart';
 import 'package:learning_bloc_app/models/notes_model.dart';
-
+ 
 class NoteBloc extends Bloc<NoteEvent, NoteStates> {
   NoteBloc() : super(NoteStates()) {
     on<FetchListEvent>(_fetchNotes);
@@ -12,7 +13,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteStates> {
     on<EditNoteEvent>(_editNotes);
     on<DeleteNoteEvent>(_deleteNotes);
   }
-
+ 
   void _fetchNotes(FetchListEvent event, Emitter<NoteStates> emit) {
     try {
       final notes = Boxes.getData().values.toList().cast<NotesModel>();
@@ -21,40 +22,41 @@ class NoteBloc extends Bloc<NoteEvent, NoteStates> {
       log('Error fetching notes: $e');
     }
   }
-
+ 
   void _addNotes(AddNoteEvent event, Emitter<NoteStates> emit) {
     try {
       final box = Boxes.getData();
       final note = event.note;
       box.add(note);
       note.save();
-
+ 
       final notes = box.values.toList().cast<NotesModel>();
       emit(state.copyWith(noteList: notes));
     } catch (e) {
       log('Error adding note: $e');
     }
   }
-
+ 
   void _editNotes(EditNoteEvent event, Emitter<NoteStates> emit) {
     try {
-      List<NotesModel> updatelist = List.from(state.noteList);
+      final box = Boxes.getData();
       final note = event.note;
-;      note.save();
-      final notes = Boxes.getData().values.toList().cast<NotesModel>();
-      updatelist = notes;
-
-      emit(state.copyWith(noteList: updatelist));
+      note.save();
+      final updatedList = box.values.map((newNote) {
+        return NotesModel(title: newNote.title, description: newNote.description);
+      }).toList();
+ 
+      emit(state.copyWith(noteList: updatedList));
     } catch (e) {
       log('Error editing note: $e');
     }
   }
-
+ 
   void _deleteNotes(DeleteNoteEvent event, Emitter<NoteStates> emit) {
     try {
       final note = event.note;
       note.delete();
-
+ 
       final notes = Boxes.getData().values.toList().cast<NotesModel>();
       emit(state.copyWith(noteList: notes));
     } catch (e) {

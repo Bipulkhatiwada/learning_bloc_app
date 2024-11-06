@@ -19,19 +19,71 @@ class DioClient {
             LoggerInterceptor(),
           ]);
 
-  Future<List<PostModel>> fetchPost({required int id}) async {
+  Future<List<PostModel>> fetchPost({int? id}) async {
     try {
-      final response = await _dio.get('${Endpoints.posts}/$id/comments');
+      final response = await _dio.get(Endpoints.users);
 
       return (response.data as List).map((responseData) {
         return PostModel(
-          postId: responseData['postId'],
-          id: responseData['id'],
-          name: responseData['name'],
+          postId: responseData['id'],
+          name: responseData['title'],
           email: responseData['email'],
           body: responseData['body'],
         );
       }).toList();
+    } on DioException catch (err) {
+      final errorMessage = (err.message).toString();
+      throw errorMessage;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future postData({required PostModel list}) async {
+    try {
+      final _ = await _dio.post(
+        Endpoints.users,
+        data: {
+          'title': list.name,
+          'body': list.body,
+          "email" : "user1@gmail.com"
+        },
+      );
+    } on DioException catch (err) {
+      final errorMessage = (err.message).toString();
+      throw errorMessage;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+
+ Future editData({required PostModel list}) async {
+  try {
+    final _ = await _dio.put(
+      "${Endpoints.users}/${list.postId}",  
+      data: {
+        'title': list.name,
+        'body': list.body,
+        "email": "user1@gmail.com",
+      },
+    );
+    // Handle the response if needed
+  } on DioException catch (err) {
+    final errorMessage = (err.message).toString();
+    throw errorMessage;
+  } catch (e) {
+    throw e.toString();
+  }
+}
+
+
+
+   Future deleteData({required String id}) async {
+    try {
+      final response = await _dio.delete(
+        "${Endpoints.users}/$id",
+      );
     } on DioException catch (err) {
       final errorMessage = (err.message).toString();
       throw errorMessage;

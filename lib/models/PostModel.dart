@@ -1,5 +1,5 @@
 class PostModel {
-  int? postId;
+  String? postId;
   int? id;
   String? name;
   String? email;

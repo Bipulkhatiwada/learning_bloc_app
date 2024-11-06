@@ -17,11 +17,75 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController bodyController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     context.read<FetchPostsBloc>().add(FetchPosts()); // Trigger event to fetch posts
   }
+   @override
+  void dispose() {
+    nameController.dispose();
+    bodyController.dispose();
+    super.dispose();
+  }
+
+ void _showAddPostDialog() {
+  // Clear the text fields before showing the dialog
+  nameController.clear();
+  bodyController.clear();
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Add New Post'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              controller: bodyController,
+              decoration: const InputDecoration(
+                labelText: 'Body',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 3,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Dismiss the dialog
+            },
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              context.read<FetchPostsBloc>().add(AddPost(
+                title: nameController.text,
+                desc: bodyController.text,
+              ));
+              Navigator.of(context).pop(); // Dismiss the dialog
+            },
+            child: const Text('Submit'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +93,13 @@ class _PostScreenState extends State<PostScreen> {
       appBar: AppBar(
         title: Text(widget.title),
         backgroundColor: Colors.blueAccent,
-        elevation: 4.0, // Add elevation to the app bar
+        elevation: 4.0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: _showAddPostDialog, // Show the dialog on button click
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -69,7 +139,7 @@ class _PostScreenState extends State<PostScreen> {
                       const SizedBox(height: 20),
                       const Text(
                         'Failed to load posts.',
-                        style:  TextStyle(
+                        style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
                           color: Colors.red,
@@ -93,8 +163,7 @@ class _PostScreenState extends State<PostScreen> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: PostCard(
-                        postId: item.postId ?? 0,
-                        id: item.id ?? 0,
+                        postId: item.postId ?? "",
                         name: item.name ?? "",
                         email: item.email ?? "",
                         body: item.body ?? "",
@@ -113,6 +182,3 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 }
-
-
-

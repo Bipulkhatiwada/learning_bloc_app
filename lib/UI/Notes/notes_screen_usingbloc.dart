@@ -108,7 +108,6 @@ class _NotesScreenBLocState extends State<NotesScreenBLoc> {
 
   Future<void> _showNoteDialog(BuildContext context,
       {NotesModel? existingNote}) async {
-    // Set the text controllers' values if editing an existing note
     if (existingNote != null) {
       _titleController.text = existingNote.title;
       _descriptionController.text = existingNote.description;
@@ -223,7 +222,7 @@ class _NotesScreenBLocState extends State<NotesScreenBLoc> {
     }
       context.read<NoteBloc>().add(FetchListEvent());
 
-      // setStates(() {});
+      // setState(() {});
       Navigator.pop(context);
         _showSuccessSnackBar(
           existingNote == null ? 'Note added' : 'Note updated');
