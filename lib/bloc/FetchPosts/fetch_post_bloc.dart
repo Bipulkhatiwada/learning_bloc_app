@@ -40,6 +40,7 @@ class FetchPostsBloc extends Bloc<FetchPostEvent, FetchPostState> {
   }
 
   void addPost(AddPost event, Emitter<FetchPostState> emit) async {
+    
     final listModel =
         PostModel(name: event.title, body: event.desc);
     final DioClient dioClient = DioClient();

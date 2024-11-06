@@ -157,12 +157,13 @@ class _PostCardState extends State<PostCard> {
             ),
             ElevatedButton(
               onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
+
                 context.read<FetchPostsBloc>().add(EditPost(
                       postId: widget.postId,
                       title: nameController.text,
                       desc: bodyController.text,
                     ));
-                Navigator.of(context).pop(); // Dismiss the dialog
               },
               child: const Text('Submit'),
             ),
@@ -192,12 +193,12 @@ class _PostCardState extends State<PostCard> {
             ),
             ElevatedButton(
               onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
                 context
                     .read<FetchPostsBloc>()
                     .add(DeletePost(postId: widget.postId));
-                Navigator.of(context).pop(); // Dismiss the dialog
               },
-              child: const Text('Submit'),
+              child: const Text('Delete'),
             ),
           ],
         );

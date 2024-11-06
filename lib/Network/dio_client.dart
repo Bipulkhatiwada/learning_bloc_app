@@ -81,7 +81,7 @@ class DioClient {
 
    Future deleteData({required String id}) async {
     try {
-      final response = await _dio.delete(
+      final _ = await _dio.delete(
         "${Endpoints.users}/$id",
       );
     } on DioException catch (err) {

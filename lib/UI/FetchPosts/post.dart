@@ -66,8 +66,7 @@ class _PostScreenState extends State<PostScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop(); // Dismiss the dialog
-            },
+              Navigator.of(context).pop();             },
             child: const Text('Cancel'),
           ),
           ElevatedButton(
@@ -76,7 +75,7 @@ class _PostScreenState extends State<PostScreen> {
                 title: nameController.text,
                 desc: bodyController.text,
               ));
-              Navigator.of(context).pop(); // Dismiss the dialog
+              Navigator.of(context).pop(); 
             },
             child: const Text('Submit'),
           ),
@@ -105,6 +104,12 @@ class _PostScreenState extends State<PostScreen> {
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<FetchPostsBloc, FetchPostState>(
           builder: (context, state) {
+
+            if (state.postList.isEmpty) {
+              return const Center(
+                child: Text("click Add + to add new lists"),
+              );
+            }
             switch (state.postStatus) {
               case PostStatus.loading:
                 return const Center(
